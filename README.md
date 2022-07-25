@@ -6,7 +6,8 @@ A command-line interface (CLI) that will take in a bitmap file (as a path on-dis
 
 ### Feature Requirements
 
-- [ ] Develop small, nested methods that perform specific activities (modularization).
+- [ ] Develop small, nested methods that perform specific activities (modularization)
+- [ ] Main should call helper methods to perform the work
 - [ ] Document all methods
 - [ ] Contain a Bitmap Class that is instantiated when a BMP file is read
 - [ ] Three arguments are required to execute the Transform function
@@ -20,7 +21,8 @@ A command-line interface (CLI) that will take in a bitmap file (as a path on-dis
 
 - Path to a local bitmap file of type ".bmp"
 - Gradle 7.4.2 or newer
-- Built with Java Temurin v17+
+- JVM: Java Eclipse Adoptium v17+
+- OpenJDK: Temurin 17+
 
 ### Steps
 
@@ -28,3 +30,9 @@ A command-line interface (CLI) that will take in a bitmap file (as a path on-dis
 2. Build: `./gradlew build`
 3. Run: `./gradlew run -args "input output transform"`
 
+## Testing
+
+- [ ] Use JUnit
+- [ ] Define descriptive tests
+- [ ] Ensure valid inputs are handled correctly
+- [ ] Ensure invalid inputs are handled correctly
