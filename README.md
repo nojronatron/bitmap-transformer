@@ -36,3 +36,33 @@ A command-line interface (CLI) that will take in a bitmap file (as a path on-dis
 - [ ] Define descriptive tests
 - [ ] Ensure valid inputs are handled correctly
 - [ ] Ensure invalid inputs are handled correctly
+
+## Tips From The Assignment
+
+### Strategy
+
+1. Gather user input (infile, outfile, transform)
+2. Read input bitmap file
+3. Parse bitmap data into Bitmap object (instance of Bitmap class)
+4. Use data from parsed Bitmap to execute transform on data directly
+5. Write the mutated image data to an output file with the specified name
+
+### Transform Ideas
+
+#### Color Palette
+
+- Invert
+- Randomize
+- Black and White
+- Darken or Lighten
+- Add or Multiply a Hue
+- Add or Subtract a Contrast
+
+#### Raster Data
+
+- Pixelate
+- Add border
+- Add watermark
+- Rotate
+- Vertical/horizontal mirror
+- Vertical/horizontal stretch
