@@ -8,7 +8,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AppTest {
     @Test void appHasAGreeting() {
+        String[] args = {"input", "output", "transform"};
         App classUnderTest = new App();
-        assertNotNull(classUnderTest.getGreeting(), "app should have a greeting");
+        assertNotNull(classUnderTest.getGreeting(args), "app should have a greeting");
+    }
+
+    @Test void appLoadsBmpFile() {
+        var inFilePath = "C:\\Users\\ricoc\\source\\repos\\CodeFellows\\baldy-8bit.bmp";
+        var outFilePath = "edited-baldy.bmp";
+        var transformation = "";
+
+        Bitmap bitmap = new Bitmap(inFilePath);
+        bitmap.getInputFile();
+
+        assertNotNull(bitmap);
     }
 }

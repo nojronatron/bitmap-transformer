@@ -4,11 +4,26 @@
 package bitmap.transformer;
 
 public class App {
-    public String getGreeting() {
-        return "Hello World!";
+    public String getGreeting(String[] strings) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Inputs received:");
+
+        for (String str : strings) {
+            sb.append(" \"").append(str).append("\"");
+        }
+
+        sb.append(".");
+
+        return sb.toString();
     }
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        if (args.length < 3) {
+            System.out.println("3 inputs required: \"input-file-path output-file-path transform-name\"");
+            return;
+        }
+
+        System.out.println(new App().getGreeting(args));
     }
 }
