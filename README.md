@@ -29,7 +29,7 @@ A command-line interface (CLI) that will take in a bitmap file (as a path on-dis
 1. Clone to your local.
 2. Build: `./gradlew build`
 3. Test: `./gradlew test`
-4. Run: `./gradlew run -args "input output transform"`
+4. Run: `./gradlew run --args "input output transform"`
 
 ## Testing Requirements
 
