@@ -20,6 +20,7 @@ public class App {
 
     public static void main(String[] args) {
         if (args.length < 3) {
+            System.out.println("Received " + args.length + " args.");
             System.out.println("3 inputs required: \"input-file-path output-file-path transform-name\"");
             return;
         }
