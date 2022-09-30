@@ -31,7 +31,9 @@ public class App {
         String outFilePath = args[1];
         String transformCmd = args[2];
 
-        Bitmap bitmap = new Bitmap(inFilePath);
+        Bitmap bitmap = new Bitmap(inFilePath, outFilePath, transformCmd);
         bitmap.getInputFile();
+        bitmap.processFile();
+        bitmap.createOutputFile();
     }
 }
