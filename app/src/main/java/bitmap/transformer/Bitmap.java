@@ -18,6 +18,9 @@ public class Bitmap {
 
     public void getInputFile() {
         try {
+            String userDir = System.getProperty("user.dir");
+            Path path = Paths.get(this.inFilePath);
+
             File file = new File(this.inFilePath);
             int rgbBit;
 

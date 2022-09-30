@@ -26,5 +26,12 @@ public class App {
         }
 
         System.out.println(new App().getGreeting(args));
+
+        String inFilePath = args[0];
+        String outFilePath = args[1];
+        String transformCmd = args[2];
+
+        Bitmap bitmap = new Bitmap(inFilePath);
+        bitmap.getInputFile();
     }
 }
