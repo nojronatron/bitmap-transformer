@@ -14,13 +14,14 @@ class AppTest {
     }
 
     @Test void appLoadsBmpFile() {
-        var inFilePath = "C:\\Users\\ricoc\\source\\repos\\CodeFellows\\baldy-8bit.bmp";
+        var inFilePath = "baldy.bmp";
         var outFilePath = "edited-baldy.bmp";
         var transformation = "";
 
-        Bitmap bitmap = new Bitmap(inFilePath);
+        Bitmap bitmap = new Bitmap(inFilePath, outFilePath, transformation);
         bitmap.getInputFile();
-
+        bitmap.processFile();
+        bitmap.createOutputFile();
         assertNotNull(bitmap);
     }
 }
