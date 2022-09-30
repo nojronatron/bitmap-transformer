@@ -20,10 +20,20 @@ public class App {
 
     public static void main(String[] args) {
         if (args.length < 3) {
+            System.out.println("Received " + args.length + " args.");
             System.out.println("3 inputs required: \"input-file-path output-file-path transform-name\"");
             return;
         }
 
         System.out.println(new App().getGreeting(args));
+
+        String inFilePath = args[0];
+        String outFilePath = args[1];
+        String transformCmd = args[2];
+
+        Bitmap bitmap = new Bitmap(inFilePath, outFilePath, transformCmd);
+        bitmap.getInputFile();
+        bitmap.processFile();
+        bitmap.createOutputFile();
     }
 }
