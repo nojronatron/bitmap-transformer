@@ -6,7 +6,6 @@ package bitmap.transformer;
 public class App {
     public String getGreeting(String[] strings) {
         StringBuilder sb = new StringBuilder();
-
         sb.append("Inputs received:");
 
         for (String str : strings) {
@@ -19,9 +18,11 @@ public class App {
     }
 
     public static void main(String[] args) {
-        if (args.length < 3) {
+        if (args.length != 3) {
             System.out.println("Received " + args.length + " args.");
-            System.out.println("3 inputs required: \"input-file-path output-file-path transform-name\"");
+            System.out.println("3 inputs required: \"input-file-path output-file-path transform-name\".");
+            System.out.println("*** Available transforms: \"bars\" ***");
+            System.out.println("Future transforms: \"rotate\" 90-deg clockwise; \"mirror\" flip on horizontal.");
             return;
         }
 
