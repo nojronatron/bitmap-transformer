@@ -4,18 +4,26 @@ A command-line interface (CLI) that will take in a bitmap file (as a path on-dis
 
 ## Features
 
+Accept three parameters on the command line.
+
+Transform an input image file, using input parameters, and write resulting transform file to the local file system.
+
+Exception handling will ensure application continues or exits gracefully in case of bad or missing parameters, or bugs in the code that cause a failure in a transform.
+
 ### Feature Requirements
 
-- [ ] Develop small, nested methods that perform specific activities (modularization)
+- [X] Develop small, nested methods that perform specific activities (modularization)
 - [X] Main should call helper methods to perform the work
 - [ ] Document all methods
 - [X] Contain a Bitmap Class that is instantiated when a BMP file is read
 - [X] Three arguments are required to execute the Transform function
 - [ ] Three transforms must be available as instance methods within the Bitmap Class
 - [X] CLI should return useful Error messages if used incorrectly
-- [ ] CLI should log a success message upon completion
+- [X] CLI should log a success message upon completion
 
 ## How To Use
+
+This is a command-line application that needs to be built into an executable file before running.
 
 ### Requirements
 
@@ -36,7 +44,7 @@ A command-line interface (CLI) that will take in a bitmap file (as a path on-dis
 - [X] Use JUnit
 - [ ] Define descriptive tests
 - [ ] Ensure valid inputs are handled correctly
-- [ ] Ensure invalid inputs are handled correctly
+- [X] Ensure invalid inputs are handled correctly
 
 ## Tips From The Original Assignment Text
 
