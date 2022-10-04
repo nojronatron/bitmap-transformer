@@ -24,8 +24,11 @@ public class App {
         if (args.length != 3) {
             System.out.println("Received " + args.length + " args.");
             System.out.println("3 inputs required: \"input-file-path output-file-path transform-name\".");
-            System.out.println("*** Available transforms: \"bars\" ***");
-            System.out.println("Future transforms: \"rotate\" 90-deg clockwise; \"mirror\" flip on horizontal.");
+            System.out.println("*** Available transforms:\n");
+            System.out.println("\t\"bars\": Put the image in a makeshift jail.");
+            System.out.println("\t\"rotate\": Rotate the image 90 degrees clockwise");
+            System.out.println("***");
+            System.out.println("Future transforms: \"mirror\" flip on horizontal.\n");
             return;
         }
 
