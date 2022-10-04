@@ -1,18 +1,18 @@
 package bitmap.transformer;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Locale;
 
 public class Bitmap {
     private final String inFilePath;
     private final String outFilePath;
     private final String transformation;
-    private File original;
-    private BufferedImage edited;
+    private final int imageType;
+    private BufferedImage bufferedImage;
     private int originalHeight;
     private int originalWidth;
 
@@ -20,51 +20,57 @@ public class Bitmap {
         this.inFilePath = inFilePath;
         this.outFilePath = outFilePath;
         this.transformation = transformation;
+        this.imageType = BufferedImage.TYPE_INT_RGB;
     }
 
     public void getInputFile() {
         try {
-            String userDir = System.getProperty("user.dir");
-            Path path = Paths.get(this.inFilePath);
-
-            this.original = new File(this.inFilePath);
-
+            this.bufferedImage = ImageIO.read(new File(this.inFilePath));
+            this.originalWidth = this.bufferedImage.getWidth();
+            this.originalHeight = this.bufferedImage.getHeight();
         } catch (NullPointerException nullPointer) {
             System.out.println("Unable to read input filepath. " + nullPointer.getMessage());
+        } catch (IOException inputOutput) {
+            System.out.println("A problem occurred while reading input file into memory. " + inputOutput.getMessage());
+        } catch (Exception exception) {
+            System.out.println("A problem occurred while getting the input file path. " + exception.getMessage());
         }
     }
 
     public void processFile() {
-        try {
-//            int rgbBit;
-            BufferedImage bufferedImage = ImageIO.read(this.original);
-            var imageWidth = bufferedImage.getWidth();
-            this.originalWidth = imageWidth;
-            var imageHeight = bufferedImage.getHeight();
-            this.originalHeight = imageHeight;
-            var writableRaster = bufferedImage.getRaster();
+        String param = transformation.toLowerCase(Locale.ROOT);
 
-//            for (int row = 0; row < imageHeight; row++) {
-//                for (int col = 0; col < imageWidth; col++) {
-//                    rgbBit = bufferedImage.getRGB(col, row);
-//                    // TODO: process file contents
-//                }
-//            }
+        switch (param) {
+            case ("bars"):
+                this.addBars();
+                break;
+            case ("rotate"):
+                this.rotateRightNinety();
+                break;
+            case (""):
+                // todo: implement a transform here
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + param);
+        }
+    }
 
-            int hInterval = imageHeight / 6;
-            int vInterval = imageWidth / 6;
-            var spotColor = bufferedImage.getRGB(130, 130);
-//            System.out.println("spotColor: " + spotColor);
+    private void rotateRightNinety() {
 
-            for (int x = 0; x < imageHeight; x += hInterval) {
-                for (int y = 0; y < imageWidth; y += vInterval) {
-                    bufferedImage.setRGB(x, y, -16711680);
-                }
-            }
+    }
 
-            this.edited = bufferedImage;
-        } catch (IOException inputOutput) {
-            System.out.println("A problem occurred while reading input file into memory. " + inputOutput.getMessage());
+    private void addBars() {
+        int hInterval = this.originalHeight / 6;
+        int vInterval = this.originalWidth / 6;
+        int startX = Math.round((float)hInterval / 2);
+
+        var barWidth = Math.round((float)hInterval / 12);
+        Graphics2D graphics2D = (Graphics2D) this.bufferedImage.getGraphics();
+        graphics2D.setStroke(new BasicStroke(barWidth));
+        graphics2D.setColor(Color.DARK_GRAY);
+
+        for (int x = startX; x < this.originalHeight; x += hInterval) {
+            graphics2D.drawLine(x,0,x,this.originalHeight);
         }
     }
 
@@ -72,7 +78,8 @@ public class Bitmap {
         try {
 //            Path path = Paths.get(this.outFilePath);
             File outputFile = new File(this.outFilePath);
-            ImageIO.write(this.edited, "bmp", outputFile);
+            var formatName = "png"; // write() does not support bmp although imageio has a bmp plugin built in?
+            ImageIO.write(this.bufferedImage, formatName, outputFile);
 
         } catch (InvalidPathException invalidPath) {
             System.out.println("Unable to create file at " + this.outFilePath + ". " + invalidPath.getMessage());
@@ -80,6 +87,9 @@ public class Bitmap {
             System.out.println("Unable to find file at " + this.outFilePath + ". " + fileNotFound.getMessage());
         } catch (IOException inputOutput) {
             System.out.println("Unable to write to file " + this.outFilePath + ". " + inputOutput.getMessage());
+        } catch (Exception exception) {
+            System.out.println("Some other exception was thrown, message: " + exception.getMessage());
         }
+        System.out.println("Wrote edits to file " + this.outFilePath);
     }
 }
