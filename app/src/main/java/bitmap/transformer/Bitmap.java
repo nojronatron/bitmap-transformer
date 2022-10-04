@@ -6,6 +6,8 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.InvalidPathException;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Bitmap {
     private final String inFilePath;
@@ -23,7 +25,15 @@ public class Bitmap {
         this.imageType = BufferedImage.TYPE_INT_RGB;
     }
 
-    public void getInputFile() throws NullPointerException, IOException{
+    public void getInputFile() throws NullPointerException, IOException, InvalidPathException {
+        // regex101.com suggestion "[a-zA-Z0-9/]*\w(?:\.png)$"gm
+        Pattern pattern = Pattern.compile("[a-zA-Z\\d]*\\w(\\.png)$");
+        Matcher matcher = pattern.matcher(this.outFilePath);
+
+        if (!matcher.matches()) {
+            throw new InvalidPathException(this.outFilePath, "Out File Path does not appear to be valid: " + this.outFilePath);
+        }
+
         this.bufferedImage = ImageIO.read(new File(this.inFilePath));
         this.originalWidth = this.bufferedImage.getWidth();
         this.originalHeight = this.bufferedImage.getHeight();
@@ -43,7 +53,7 @@ public class Bitmap {
                 // todo: implement a transform here
                 break;
             default:
-                throw new IllegalStateException("Unsupported transform " + param);
+                throw new IllegalStateException("Nothing was processed: Unsupported transform \"" + param + "\".");
         }
     }
 
@@ -66,7 +76,7 @@ public class Bitmap {
         }
     }
 
-    public void createOutputFile() throws InvalidPathException, FileNotFoundException, IOException{
+    public void createOutputFile() throws InvalidPathException, IOException {
         // Path path = Paths.get(this.outFilePath);
         File outputFile = new File(this.outFilePath);
         var formatName = "png"; // write() does not support bmp although imageio has a bmp plugin built in?
