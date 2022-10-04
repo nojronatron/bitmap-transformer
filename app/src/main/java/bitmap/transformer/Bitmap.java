@@ -23,21 +23,13 @@ public class Bitmap {
         this.imageType = BufferedImage.TYPE_INT_RGB;
     }
 
-    public void getInputFile() {
-        try {
-            this.bufferedImage = ImageIO.read(new File(this.inFilePath));
-            this.originalWidth = this.bufferedImage.getWidth();
-            this.originalHeight = this.bufferedImage.getHeight();
-        } catch (NullPointerException nullPointer) {
-            System.out.println("Unable to read input filepath. " + nullPointer.getMessage());
-        } catch (IOException inputOutput) {
-            System.out.println("A problem occurred while reading input file into memory. " + inputOutput.getMessage());
-        } catch (Exception exception) {
-            System.out.println("A problem occurred while getting the input file path. " + exception.getMessage());
-        }
+    public void getInputFile() throws NullPointerException, IOException{
+        this.bufferedImage = ImageIO.read(new File(this.inFilePath));
+        this.originalWidth = this.bufferedImage.getWidth();
+        this.originalHeight = this.bufferedImage.getHeight();
     }
 
-    public void processFile() {
+    public void processFile() throws IllegalStateException {
         String param = transformation.toLowerCase(Locale.ROOT);
 
         switch (param) {
@@ -51,7 +43,7 @@ public class Bitmap {
                 // todo: implement a transform here
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + param);
+                throw new IllegalStateException("Unsupported transform " + param);
         }
     }
 
@@ -74,22 +66,20 @@ public class Bitmap {
         }
     }
 
-    public void createOutputFile() {
-        try {
-//            Path path = Paths.get(this.outFilePath);
-            File outputFile = new File(this.outFilePath);
-            var formatName = "png"; // write() does not support bmp although imageio has a bmp plugin built in?
-            ImageIO.write(this.bufferedImage, formatName, outputFile);
+    public void createOutputFile() throws InvalidPathException, FileNotFoundException, IOException{
+        // Path path = Paths.get(this.outFilePath);
+        File outputFile = new File(this.outFilePath);
+        var formatName = "png"; // write() does not support bmp although imageio has a bmp plugin built in?
+        ImageIO.write(this.bufferedImage, formatName, outputFile);
+    }
 
-        } catch (InvalidPathException invalidPath) {
-            System.out.println("Unable to create file at " + this.outFilePath + ". " + invalidPath.getMessage());
-        } catch (FileNotFoundException fileNotFound) {
-            System.out.println("Unable to find file at " + this.outFilePath + ". " + fileNotFound.getMessage());
-        } catch (IOException inputOutput) {
-            System.out.println("Unable to write to file " + this.outFilePath + ". " + inputOutput.getMessage());
-        } catch (Exception exception) {
-            System.out.println("Some other exception was thrown, message: " + exception.getMessage());
-        }
-        System.out.println("Wrote edits to file " + this.outFilePath);
+    public String getInFilePath() {
+        return this.inFilePath;
+    }
+    public String getOutFilePath() {
+        return this.outFilePath;
+    }
+    public String getTransformation() {
+        return this.transformation;
     }
 }

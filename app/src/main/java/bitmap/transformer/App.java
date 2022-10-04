@@ -3,6 +3,10 @@
  */
 package bitmap.transformer;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.InvalidPathException;
+
 public class App {
     public String getGreeting(String[] strings) {
         StringBuilder sb = new StringBuilder();
@@ -33,8 +37,35 @@ public class App {
         String transformCmd = args[2];
 
         Bitmap bitmap = new Bitmap(inFilePath, outFilePath, transformCmd);
-        bitmap.getInputFile();
-        bitmap.processFile();
-        bitmap.createOutputFile();
+
+        try {
+            bitmap.getInputFile();
+            System.out.println("Read file " + bitmap.getInFilePath() + " successfully.");
+        } catch (NullPointerException nullPointer) {
+            System.out.println("Unable to read file at " + bitmap.getInFilePath());
+            return;
+        } catch (IOException inputOutput) {
+            System.out.println("A problem occurred while reading " + bitmap.getInFilePath());
+            return;
+        }
+
+        try {
+            bitmap.processFile();
+            System.out.println("Successfully applied transformation!");
+        } catch (IllegalStateException illegalState) {
+            System.out.println(illegalState.getMessage());
+            return;
+        }
+
+        try {
+            bitmap.createOutputFile();
+            System.out.println("Wrote changes to file " + bitmap.getOutFilePath());
+        } catch (InvalidPathException invalidPath) {
+            System.out.println("Unable to create file at " + bitmap.getOutFilePath());
+        } catch (FileNotFoundException fileNotFound) {
+            System.out.println("Unable to find file at " + bitmap.getOutFilePath());
+        } catch (IOException inputOutput) {
+            System.out.println("Unable to write to file " + bitmap.getOutFilePath());
+        }
     }
 }
