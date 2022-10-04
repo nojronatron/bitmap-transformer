@@ -3,7 +3,6 @@
  */
 package bitmap.transformer;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.InvalidPathException;
 
@@ -45,7 +44,10 @@ public class App {
             System.out.println("Unable to read file at " + bitmap.getInFilePath());
             return;
         } catch (IOException inputOutput) {
-            System.out.println("A problem occurred while reading " + bitmap.getInFilePath());
+            System.out.println("A problem occurred while reading " + bitmap.getInFilePath() + ". Is the filename correct?");
+            return;
+        } catch (InvalidPathException invalidPath) {
+            System.out.println(invalidPath.getReason());
             return;
         }
 
@@ -62,8 +64,6 @@ public class App {
             System.out.println("Wrote changes to file " + bitmap.getOutFilePath());
         } catch (InvalidPathException invalidPath) {
             System.out.println("Unable to create file at " + bitmap.getOutFilePath());
-        } catch (FileNotFoundException fileNotFound) {
-            System.out.println("Unable to find file at " + bitmap.getOutFilePath());
         } catch (IOException inputOutput) {
             System.out.println("Unable to write to file " + bitmap.getOutFilePath());
         }
