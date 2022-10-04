@@ -15,6 +15,7 @@ public class Bitmap {
     private final String transformation;
     private final int imageType;
     private BufferedImage bufferedImage;
+    private BufferedImage outputImage;
     private int originalHeight;
     private int originalWidth;
 
@@ -57,17 +58,33 @@ public class Bitmap {
         }
     }
 
+    @SuppressWarnings("SuspiciousNameCombination")
     private void rotateRightNinety() {
+        try {
+            var newY = this.originalWidth;
+            var newX = this.originalHeight;
+            int halfNewY = Math.round((float) newY / 2);
+            int halfNewX = Math.round((float) newX / 2);
+
+            this.outputImage = new BufferedImage(newX, newY, this.imageType);
+            Graphics2D graphics2D = this.outputImage.createGraphics();
+            graphics2D.translate((newY - newX) / 2, (newY - newX) / 2);
+            graphics2D.rotate(Math.PI / 2, halfNewX, halfNewY);
+            graphics2D.drawRenderedImage(this.bufferedImage, null);
+        } catch (Exception exception) {
+            System.out.println("Something bad happened while rotating the image.");
+        }
 
     }
 
     private void addBars() {
         int hInterval = this.originalHeight / 6;
-        int vInterval = this.originalWidth / 6;
         int startX = Math.round((float)hInterval / 2);
-
         var barWidth = Math.round((float)hInterval / 12);
-        Graphics2D graphics2D = (Graphics2D) this.bufferedImage.getGraphics();
+
+        this.outputImage = new BufferedImage(this.originalWidth, this.originalHeight, this.imageType);
+        Graphics2D graphics2D = this.outputImage.createGraphics();
+        graphics2D.drawRenderedImage(this.bufferedImage, null);
         graphics2D.setStroke(new BasicStroke(barWidth));
         graphics2D.setColor(Color.DARK_GRAY);
 
@@ -77,10 +94,9 @@ public class Bitmap {
     }
 
     public void createOutputFile() throws InvalidPathException, IOException {
-        // Path path = Paths.get(this.outFilePath);
         File outputFile = new File(this.outFilePath);
         var formatName = "png"; // write() does not support bmp although imageio has a bmp plugin built in?
-        ImageIO.write(this.bufferedImage, formatName, outputFile);
+        ImageIO.write(this.outputImage, formatName, outputFile);
     }
 
     public String getInFilePath() {
