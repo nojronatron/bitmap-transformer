@@ -2,7 +2,10 @@ package bitmap.transformer;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImagingOpException;
 import java.io.*;
 import java.nio.file.InvalidPathException;
 import java.util.Locale;
@@ -40,6 +43,7 @@ public class Bitmap {
         this.originalHeight = this.bufferedImage.getHeight();
     }
 
+    @SuppressWarnings("EnhancedSwitchMigration")
     public void processFile() throws IllegalStateException {
         String param = transformation.toLowerCase(Locale.ROOT);
 
@@ -50,11 +54,27 @@ public class Bitmap {
             case ("rotate"):
                 this.rotateRightNinety();
                 break;
-            case (""):
-                // todo: implement a transform here
+            case ("mirror"):
+                this.mirrorImage();
                 break;
             default:
                 throw new IllegalStateException("Nothing was processed: Unsupported transform \"" + param + "\".");
+        }
+    }
+
+    private void mirrorImage() {
+        try {
+            this.outputImage = new BufferedImage(originalWidth, originalHeight, this.imageType);
+            AffineTransform transform = AffineTransform.getScaleInstance(-1, 1);
+            transform.translate(-originalWidth, 0);
+            AffineTransformOp operation = new AffineTransformOp(transform, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+            this.outputImage = operation.filter(this.bufferedImage, this.outputImage);
+        } catch (NullPointerException nullPointer) {
+            System.out.println("Something bad happened while mirroring the image: " + nullPointer.getMessage());
+        } catch (IllegalArgumentException illegalArgument) {
+            System.out.println("Source and destination images are the same. Processing halted!");
+        } catch (ImagingOpException imagingOp) {
+            System.out.println("Something failed while operating on the image: " + imagingOp.getMessage());
         }
     }
 
@@ -72,9 +92,8 @@ public class Bitmap {
             graphics2D.rotate(Math.PI / 2, halfNewX, halfNewY);
             graphics2D.drawRenderedImage(this.bufferedImage, null);
         } catch (Exception exception) {
-            System.out.println("Something bad happened while rotating the image.");
+            System.out.println("Something bad happened while rotating the image: " + exception.getMessage());
         }
-
     }
 
     private void addBars() {
