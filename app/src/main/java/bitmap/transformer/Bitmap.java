@@ -6,6 +6,8 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.InvalidPathException;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Bitmap {
     private final String inFilePath;
@@ -13,6 +15,7 @@ public class Bitmap {
     private final String transformation;
     private final int imageType;
     private BufferedImage bufferedImage;
+    private BufferedImage outputImage;
     private int originalHeight;
     private int originalWidth;
 
@@ -23,21 +26,21 @@ public class Bitmap {
         this.imageType = BufferedImage.TYPE_INT_RGB;
     }
 
-    public void getInputFile() {
-        try {
-            this.bufferedImage = ImageIO.read(new File(this.inFilePath));
-            this.originalWidth = this.bufferedImage.getWidth();
-            this.originalHeight = this.bufferedImage.getHeight();
-        } catch (NullPointerException nullPointer) {
-            System.out.println("Unable to read input filepath. " + nullPointer.getMessage());
-        } catch (IOException inputOutput) {
-            System.out.println("A problem occurred while reading input file into memory. " + inputOutput.getMessage());
-        } catch (Exception exception) {
-            System.out.println("A problem occurred while getting the input file path. " + exception.getMessage());
+    public void getInputFile() throws NullPointerException, IOException, InvalidPathException {
+        // regex101.com suggestion "[a-zA-Z0-9/]*\w(?:\.png)$"gm
+        Pattern pattern = Pattern.compile("[a-zA-Z\\d]*\\w(\\.png)$");
+        Matcher matcher = pattern.matcher(this.outFilePath);
+
+        if (!matcher.matches()) {
+            throw new InvalidPathException(this.outFilePath, "Out File Path does not appear to be valid: " + this.outFilePath);
         }
+
+        this.bufferedImage = ImageIO.read(new File(this.inFilePath));
+        this.originalWidth = this.bufferedImage.getWidth();
+        this.originalHeight = this.bufferedImage.getHeight();
     }
 
-    public void processFile() {
+    public void processFile() throws IllegalStateException {
         String param = transformation.toLowerCase(Locale.ROOT);
 
         switch (param) {
@@ -51,21 +54,37 @@ public class Bitmap {
                 // todo: implement a transform here
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + param);
+                throw new IllegalStateException("Nothing was processed: Unsupported transform \"" + param + "\".");
         }
     }
 
+    @SuppressWarnings("SuspiciousNameCombination")
     private void rotateRightNinety() {
+        try {
+            var newY = this.originalWidth;
+            var newX = this.originalHeight;
+            int halfNewY = Math.round((float) newY / 2);
+            int halfNewX = Math.round((float) newX / 2);
+
+            this.outputImage = new BufferedImage(newX, newY, this.imageType);
+            Graphics2D graphics2D = this.outputImage.createGraphics();
+            graphics2D.translate((newY - newX) / 2, (newY - newX) / 2);
+            graphics2D.rotate(Math.PI / 2, halfNewX, halfNewY);
+            graphics2D.drawRenderedImage(this.bufferedImage, null);
+        } catch (Exception exception) {
+            System.out.println("Something bad happened while rotating the image.");
+        }
 
     }
 
     private void addBars() {
         int hInterval = this.originalHeight / 6;
-        int vInterval = this.originalWidth / 6;
         int startX = Math.round((float)hInterval / 2);
-
         var barWidth = Math.round((float)hInterval / 12);
-        Graphics2D graphics2D = (Graphics2D) this.bufferedImage.getGraphics();
+
+        this.outputImage = new BufferedImage(this.originalWidth, this.originalHeight, this.imageType);
+        Graphics2D graphics2D = this.outputImage.createGraphics();
+        graphics2D.drawRenderedImage(this.bufferedImage, null);
         graphics2D.setStroke(new BasicStroke(barWidth));
         graphics2D.setColor(Color.DARK_GRAY);
 
@@ -74,22 +93,19 @@ public class Bitmap {
         }
     }
 
-    public void createOutputFile() {
-        try {
-//            Path path = Paths.get(this.outFilePath);
-            File outputFile = new File(this.outFilePath);
-            var formatName = "png"; // write() does not support bmp although imageio has a bmp plugin built in?
-            ImageIO.write(this.bufferedImage, formatName, outputFile);
+    public void createOutputFile() throws InvalidPathException, IOException {
+        File outputFile = new File(this.outFilePath);
+        var formatName = "png"; // write() does not support bmp although imageio has a bmp plugin built in?
+        ImageIO.write(this.outputImage, formatName, outputFile);
+    }
 
-        } catch (InvalidPathException invalidPath) {
-            System.out.println("Unable to create file at " + this.outFilePath + ". " + invalidPath.getMessage());
-        } catch (FileNotFoundException fileNotFound) {
-            System.out.println("Unable to find file at " + this.outFilePath + ". " + fileNotFound.getMessage());
-        } catch (IOException inputOutput) {
-            System.out.println("Unable to write to file " + this.outFilePath + ". " + inputOutput.getMessage());
-        } catch (Exception exception) {
-            System.out.println("Some other exception was thrown, message: " + exception.getMessage());
-        }
-        System.out.println("Wrote edits to file " + this.outFilePath);
+    public String getInFilePath() {
+        return this.inFilePath;
+    }
+    public String getOutFilePath() {
+        return this.outFilePath;
+    }
+    public String getTransformation() {
+        return this.transformation;
     }
 }

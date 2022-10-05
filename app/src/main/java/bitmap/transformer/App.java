@@ -3,6 +3,9 @@
  */
 package bitmap.transformer;
 
+import java.io.IOException;
+import java.nio.file.InvalidPathException;
+
 public class App {
     public String getGreeting(String[] strings) {
         StringBuilder sb = new StringBuilder();
@@ -21,8 +24,11 @@ public class App {
         if (args.length != 3) {
             System.out.println("Received " + args.length + " args.");
             System.out.println("3 inputs required: \"input-file-path output-file-path transform-name\".");
-            System.out.println("*** Available transforms: \"bars\" ***");
-            System.out.println("Future transforms: \"rotate\" 90-deg clockwise; \"mirror\" flip on horizontal.");
+            System.out.println("*** Available transforms:\n");
+            System.out.println("\t\"bars\": Put the image in a makeshift jail.");
+            System.out.println("\t\"rotate\": Rotate the image 90 degrees clockwise");
+            System.out.println("***");
+            System.out.println("Future transforms: \"mirror\" flip on horizontal.\n");
             return;
         }
 
@@ -33,8 +39,36 @@ public class App {
         String transformCmd = args[2];
 
         Bitmap bitmap = new Bitmap(inFilePath, outFilePath, transformCmd);
-        bitmap.getInputFile();
-        bitmap.processFile();
-        bitmap.createOutputFile();
+
+        try {
+            bitmap.getInputFile();
+            System.out.println("Read file " + bitmap.getInFilePath() + " successfully.");
+        } catch (NullPointerException nullPointer) {
+            System.out.println("Unable to read file at " + bitmap.getInFilePath());
+            return;
+        } catch (IOException inputOutput) {
+            System.out.println("A problem occurred while reading " + bitmap.getInFilePath() + ". Is the filename correct?");
+            return;
+        } catch (InvalidPathException invalidPath) {
+            System.out.println(invalidPath.getReason());
+            return;
+        }
+
+        try {
+            bitmap.processFile();
+            System.out.println("Successfully applied transformation!");
+        } catch (IllegalStateException illegalState) {
+            System.out.println(illegalState.getMessage());
+            return;
+        }
+
+        try {
+            bitmap.createOutputFile();
+            System.out.println("Wrote changes to file " + bitmap.getOutFilePath());
+        } catch (InvalidPathException invalidPath) {
+            System.out.println("Unable to create file at " + bitmap.getOutFilePath());
+        } catch (IOException inputOutput) {
+            System.out.println("Unable to write to file " + bitmap.getOutFilePath());
+        }
     }
 }

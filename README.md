@@ -4,18 +4,28 @@ A command-line interface (CLI) that will take in a bitmap file (as a path on-dis
 
 ## Features
 
+Accept three parameters on the command line.
+
+Transform an input image file, using input parameters, and write resulting transform file to the local file system.
+
+Exception handling will ensure application continues or exits gracefully in case of bad or missing parameters, or bugs in the code that cause a failure in a transform.
+
+Supports PNG file format only.
+
 ### Feature Requirements
 
-- [ ] Develop small, nested methods that perform specific activities (modularization)
+- [X] Develop small, nested methods that perform specific activities (modularization)
 - [X] Main should call helper methods to perform the work
 - [ ] Document all methods
 - [X] Contain a Bitmap Class that is instantiated when a BMP file is read
 - [X] Three arguments are required to execute the Transform function
 - [ ] Three transforms must be available as instance methods within the Bitmap Class
 - [X] CLI should return useful Error messages if used incorrectly
-- [ ] CLI should log a success message upon completion
+- [X] CLI should log a success message upon completion
 
 ## How To Use
+
+This is a command-line application that needs to be built into an executable file before running.
 
 ### Requirements
 
@@ -29,14 +39,26 @@ A command-line interface (CLI) that will take in a bitmap file (as a path on-dis
 1. Clone to your local.
 2. Build: `./gradlew build`
 3. Test: `./gradlew test`
-4. Run: `./gradlew run --args "input output transform"`
+4. Run: `./gradlew run --args "infile outfile transform"`
+
+### Args
+
+Infile: This should point to an existing PNG file at the working directory.
+
+Outfile: This should be the output filename of type PNG in the format 'filename.png'.
+
+Transform:
+
+1. bars: Adds jail bars to the image.
+2. rotate: Rotates the image by 90 degrees clockwise.
+3. mirror: Flip the image along the vertical axis.
 
 ## Testing Requirements
 
 - [X] Use JUnit
 - [ ] Define descriptive tests
 - [ ] Ensure valid inputs are handled correctly
-- [ ] Ensure invalid inputs are handled correctly
+- [X] Ensure invalid inputs are handled correctly
 
 ## Tips From The Original Assignment Text
 
