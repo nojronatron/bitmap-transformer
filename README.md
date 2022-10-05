@@ -7,10 +7,10 @@ A command-line interface (CLI) that will take in a bitmap file (as a path on-dis
 ### Feature Requirements
 
 - [ ] Develop small, nested methods that perform specific activities (modularization)
-- [ ] Main should call helper methods to perform the work
+- [X] Main should call helper methods to perform the work
 - [ ] Document all methods
 - [X] Contain a Bitmap Class that is instantiated when a BMP file is read
-- [ ] Three arguments are required to execute the Transform function
+- [X] Three arguments are required to execute the Transform function
 - [ ] Three transforms must be available as instance methods within the Bitmap Class
 - [X] CLI should return useful Error messages if used incorrectly
 - [ ] CLI should log a success message upon completion
@@ -38,7 +38,7 @@ A command-line interface (CLI) that will take in a bitmap file (as a path on-dis
 - [ ] Ensure valid inputs are handled correctly
 - [ ] Ensure invalid inputs are handled correctly
 
-## Tips From The Assignment
+## Tips From The Original Assignment Text
 
 ### Strategy
 
