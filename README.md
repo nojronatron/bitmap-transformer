@@ -19,7 +19,7 @@ Supports PNG file format only.
 - [ ] Document all methods
 - [X] Contain a Bitmap Class that is instantiated when a BMP file is read
 - [X] Three arguments are required to execute the Transform function
-- [ ] Three transforms must be available as instance methods within the Bitmap Class
+- [X] Three transforms must be available as instance methods within the Bitmap Class
 - [X] CLI should return useful Error messages if used incorrectly
 - [X] CLI should log a success message upon completion
 
@@ -57,7 +57,7 @@ Transform:
 
 - [X] Use JUnit
 - [ ] Define descriptive tests
-- [ ] Ensure valid inputs are handled correctly
+- [X] Ensure valid inputs are handled correctly
 - [X] Ensure invalid inputs are handled correctly
 
 ## Tips From The Original Assignment Text
@@ -89,3 +89,9 @@ Transform:
 - Rotate
 - Vertical/horizontal mirror
 - Vertical/horizontal stretch
+
+## Resources
+
+Rotate transformation method code inspired by [StackOverflow question "Rotate 90 degree to right image in java"](https://stackoverflow.com/questions/20959796/rotate-90-degree-to-right-image-in-java)
+
+Flip transformation method code inspired by [StackOverflow question "Flip Image with Graphics2D"](https://stackoverflow.com/questions/9558981/flip-image-with-graphics2d)
