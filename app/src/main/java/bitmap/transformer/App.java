@@ -7,7 +7,12 @@ import java.io.IOException;
 import java.nio.file.InvalidPathException;
 
 public class App {
-    public String getGreeting(String[] strings) {
+    /**
+     * Proof of life method displays input args if there are 3 of them.
+     * @param strings Args received by Main.
+     * @return String representing received command-line args.
+     */
+    public static String getGreeting(String[] strings) {
         StringBuilder sb = new StringBuilder();
         sb.append("Inputs received:");
 
@@ -20,18 +25,19 @@ public class App {
         return sb.toString();
     }
 
+    public static void displayUsage() {
+        System.out.println("Usage: bitmap-transformer inputFilename outputFileName transformName\n");
+        System.out.println("**************** Available Transforms ****************");
+        System.out.println("*  \"bars\": Put the image in a makeshift jail         *");
+        System.out.println("*  \"rotate\": Rotate the image 90 degrees clockwise   *");
+        System.out.println("*  \"mirror\" flip left and right sides of image       *");
+        System.out.println("******************************************************\n");
+    }
     public static void main(String[] args) {
         if (args.length != 3) {
-            System.out.println("Usage: bitmap-transformer inputFilename outputFileName transformName\n");
-            System.out.println("**************** Available Transforms ******************");
-            System.out.println("*  \"bars\": Put the image in a makeshift jail         *");
-            System.out.println("*  \"rotate\": Rotate the image 90 degrees clockwise   *");
-            System.out.println("*  \"mirror\" flip left and right sides of image       *");
-            System.out.println("********************************************************\n");
+            App.displayUsage();
             return;
         }
-
-        System.out.println(new App().getGreeting(args));
 
         String inFilePath = args[0];
         String outFilePath = args[1];
@@ -39,8 +45,22 @@ public class App {
 
         Bitmap bitmap = new Bitmap(inFilePath, outFilePath, transformCmd);
 
+        if (!bitmap.isValidTransformation(transformCmd)) {
+            App.displayUsage();
+            return;
+        }
+
+        if (!bitmap.isFormattedFilePath(inFilePath)) {
+            System.out.println("\"inputFilename\" must contain only alpha-numerics, underscore, hyphen, a dot. File type must be PNG.\n");
+            return;
+        }
+        if (!bitmap.isFormattedFilePath(outFilePath)) {
+            System.out.println("\"outputFilename\" must contain only alpha-numerics, underscore, hyphen, a dot. File type must be PNG.\n");
+            return;
+        }
+
         try {
-            bitmap.getInputFile();
+            bitmap.loadInputFile();
             System.out.println("Read file " + bitmap.getInFilePath() + " successfully.");
         } catch (NullPointerException nullPointer) {
             System.out.println("Unable to read file at " + bitmap.getInFilePath());
@@ -54,7 +74,7 @@ public class App {
         }
 
         try {
-            bitmap.processFile();
+            bitmap.processTransformation();
             System.out.println("Successfully applied transformation!");
         } catch (IllegalStateException illegalState) {
             System.out.println(illegalState.getMessage());
@@ -62,7 +82,7 @@ public class App {
         }
 
         try {
-            bitmap.createOutputFile();
+            bitmap.writeOutputFile();
             System.out.println("Wrote changes to file " + bitmap.getOutFilePath());
         } catch (InvalidPathException invalidPath) {
             System.out.println("Unable to create file at " + bitmap.getOutFilePath());
