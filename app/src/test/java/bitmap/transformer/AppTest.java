@@ -4,24 +4,91 @@
 package bitmap.transformer;
 
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Locale;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class AppTest {
     @Test void appHasAGreeting() {
         String[] args = {"input", "output", "transform"};
-        App classUnderTest = new App();
-        assertNotNull(classUnderTest.getGreeting(args), "app should have a greeting");
+        assertNotNull(App.getGreeting(args), "app should have a greeting");
     }
 
-    @Test void appLoadsBmpFile() {
-        var inFilePath = "baldy.bmp";
-        var outFilePath = "edited-baldy.bmp";
-        var transformation = "";
+    @Test void filePathTestsPass() {
+        String filepath1 = "thisShouldPass.png";
+        String filepath2 = "this_should_pass.png";
+        String filepath3 = "this-should-pass.png";
+        String filepath4 = "this_1should-pass2.png";
+        String filepath5 = "THISSHOULDPASS.PNG";
 
-        Bitmap bitmap = new Bitmap(inFilePath, outFilePath, transformation);
-        bitmap.getInputFile();
-        bitmap.processFile();
-        bitmap.createOutputFile();
-        assertNotNull(bitmap);
+        assertTrue(Bitmap.isFormattedFilePath(filepath1));
+        assertTrue(Bitmap.isFormattedFilePath(filepath2));
+        assertTrue(Bitmap.isFormattedFilePath(filepath3));
+        assertTrue(Bitmap.isFormattedFilePath(filepath4));
+        assertTrue(Bitmap.isFormattedFilePath(filepath5));
+    }
+
+    @Test void nonAcceptedFilePathTests() {
+        String filepath1 = "this!ShouldFai)l.png";
+        String filepath2 = "this_@should_(Fail,png";
+        String filepath3 = "this-s#hould*-fai?l.png";
+        String filepath4 = "this_1s$hou&ld-fail2.png";
+        String filepath5 = "THISSHOU%L^DFAIL.PNG";
+
+        assertFalse(Bitmap.isFormattedFilePath(filepath1));
+        assertFalse(Bitmap.isFormattedFilePath(filepath2));
+        assertFalse(Bitmap.isFormattedFilePath(filepath3));
+        assertFalse(Bitmap.isFormattedFilePath(filepath4));
+        assertFalse(Bitmap.isFormattedFilePath(filepath5));
+    }
+
+    @Test void appLoadsBmpFile() throws IOException {
+        var inFilePath = "Wiley_400px.png";
+        var outFilePath = "edited-Wiley.png";
+        var transformation = "bars";
+
+        Bitmap sut = new Bitmap(inFilePath, outFilePath, transformation);
+        assertNull(sut.getBufferedImage());
+        assertTrue(Bitmap.isFormattedFilePath(inFilePath));
+        assertTrue(Bitmap.isFormattedFilePath(outFilePath));
+        sut.loadInputFile();
+        assertNotNull(sut.getBufferedImage());
+    }
+
+    @Test void verifiesAvailableTransforms() {
+        String transform1 = "mirror";
+        String transform2 = "rotate";
+        String transform3 = "bars";
+        String transform4 = "skew";
+        String transform5 = "lighten";
+        String transform6 = "resize";
+        String transform7 = "BARS";
+        String transform8 = "";
+
+        var sut = new Bitmap("","","");
+        var availableTransforms = sut.getAvailableTransformations();
+        var listOfTransforms = new ArrayList<String>(Arrays.stream(availableTransforms).toList());
+
+        assertTrue(listOfTransforms.contains(transform1));
+        assertTrue(sut.isValidTransformation(transform1));
+        assertTrue(listOfTransforms.contains(transform2));
+        assertTrue(sut.isValidTransformation(transform2));
+        assertTrue(listOfTransforms.contains(transform3));
+        assertTrue(sut.isValidTransformation(transform3));
+        assertTrue(listOfTransforms.contains(transform7.toLowerCase(Locale.ROOT)));
+        assertTrue(sut.isValidTransformation(transform7));
+
+        assertFalse(listOfTransforms.contains(transform4));
+        assertFalse(sut.isValidTransformation(transform4));
+        assertFalse(listOfTransforms.contains(transform5));
+        assertFalse(sut.isValidTransformation(transform5));
+        assertFalse(listOfTransforms.contains(transform6));
+        assertFalse(sut.isValidTransformation(transform6));
+        assertFalse(listOfTransforms.contains(transform8));
+        assertFalse(sut.isValidTransformation(transform8));
     }
 }
